@@ -6,8 +6,10 @@ import ExpertDetailsPage from './pages/ExpertDetailsPage'
 import ChatPage from './pages/ChatPage'
 import BookingPage from './pages/BookingPage'
 import DashboardPage from './pages/DashboardPage'
+import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import AdminPage from './pages/AdminPage'
 
 function App() {
   return (
@@ -19,7 +21,10 @@ function App() {
         <Route path="/experts/:id" element={<ExpertDetailsPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/book" element={<BookingPage />} />
+        <Route path="/booking" element={<BookingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>

@@ -17,7 +17,7 @@ def setup_data(db: Session):
     db.query(User).delete()
     db.commit()
 
-    user = User(name='Test User', email='test@example.com', password_hash=get_password_hash('password'), role='user')
+    user = User(name='Test User', email='test@example.com', password_hash=get_password_hash('password'), is_learner=True, is_expert=False, is_admin=False)
     db.add(user)
     db.commit()
     db.refresh(user)

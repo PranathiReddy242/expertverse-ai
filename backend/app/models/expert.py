@@ -5,7 +5,8 @@ from sqlalchemy import (
     Text,
     Float,
     Boolean,
-    ForeignKey
+    ForeignKey,
+    DateTime,
 )
 from sqlalchemy.orm import relationship
 
@@ -99,6 +100,22 @@ class Expert(Base):
     is_verified = Column(
         Boolean,
         default=False
+    )
+
+    # pending, approved, rejected
+    verification_status = Column(
+        String,
+        default="pending"
+    )
+
+    rejection_reason = Column(
+        Text,
+        nullable=True
+    )
+
+    reviewed_at = Column(
+        DateTime,
+        nullable=True
     )
 
     # Expert controls visibility

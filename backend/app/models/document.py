@@ -70,6 +70,25 @@ class Document(Base):
     # ebook
     # transcript
 
+    # Document review lifecycle
+    status = Column(
+        String,
+        default="approved"
+    )
+    # pending
+    # approved
+    # rejected
+
+    review_notes = Column(
+        Text,
+        nullable=True
+    )
+
+    reviewed_at = Column(
+        DateTime,
+        nullable=True
+    )
+
     created_at = Column(
         DateTime,
         default=datetime.utcnow

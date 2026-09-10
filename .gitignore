@@ -4,9 +4,18 @@ __pycache__/
 *.pyd
 *.pytest_cache/
 .env
+.env.*
+!.env.example
+!backend/.env.example
 .venv/
 venv/
 */.venv/
+
+# Database (never commit real DBs)
+backend/*.db
+backend/*.sqlite3
+*.db
+*.sqlite3
 
 # Node
 node_modules/
@@ -35,4 +44,3 @@ yarn-error.log*
 frontend/src/env.d.ts
 backend/__pycache__/
 backend/.mypy_cache
-backend/*.sqlite3

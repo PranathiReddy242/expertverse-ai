@@ -10,7 +10,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.token import Token
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserProfileRead, UserRead
 
 router = APIRouter()
 
@@ -60,6 +60,8 @@ def register(user_create: UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered"
         )
 
+    is_expert = user_create.role == "expert"
+
     user = User(
         name=user_create.name,
         email=user_create.email,
@@ -67,7 +69,7 @@ def register(user_create: UserCreate, db: Session = Depends(get_db)):
 
         # Default roles
         is_learner=True,
-        is_expert=False,
+        is_expert=is_expert,
         is_admin=False,
     )
 
@@ -142,6 +144,28 @@ def get_current_user(
     return user
 
 
-@router.get("/profile", response_model=UserRead)
+@router.get("/profile", response_model=UserProfileRead)
 def profile(current_user: User = Depends(get_current_user)):
-    return current_user
+    expert_profile = current_user.expert_profile
+
+    return {
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "is_learner": current_user.is_learner,
+        "is_expert": current_user.is_expert,
+        "is_admin": current_user.is_admin,
+        "expert_profile": {
+            "id": expert_profile.id,
+            "user_id": expert_profile.user_id,
+            "title": expert_profile.title,
+            "company": expert_profile.company,
+            "experience_years": expert_profile.experience_years,
+            "bio": expert_profile.bio,
+            "hourly_rate": expert_profile.hourly_rate,
+            "rating": expert_profile.rating,
+            "is_verified": bool(expert_profile.is_verified),
+            "verification_status": expert_profile.verification_status or ("approved" if expert_profile.is_verified else "pending"),
+            "rejection_reason": expert_profile.rejection_reason,
+        } if expert_profile else None,
+    }

@@ -5,7 +5,14 @@ from app.schemas.chat_history import ChatHistoryRead
 from app.models.chat_history import ChatHistory
 from app.db.session import get_db
 from app.routes.auth import get_current_user
-from app.services.agents import analyze_problem, match_experts, generate_roadmap, save_chat_history, save_action_plan
+from app.services.agents import (
+    analyze_problem,
+    match_experts,
+    generate_roadmap,
+    generate_conversational_response,
+    save_chat_history,
+    save_action_plan,
+)
 
 router = APIRouter()
 
@@ -26,10 +33,13 @@ def chat(request: ChatRequest, current_user=Depends(get_current_user), db: Sessi
     analysis = analyze_problem(db, request.message)
     experts = match_experts(db, request.message)
     plan = generate_roadmap(db, request.message)
-    save_chat_history(db, current_user.id, request.message, analysis.get("analysis_text", ""))
+    conversational_message = generate_conversational_response(
+        db, request.message, analysis, experts, plan
+    )
+    save_chat_history(db, current_user.id, request.message, conversational_message)
     save_action_plan(db, current_user.id, str(plan))
     return ChatResponse(
-        message="Here is your plan and recommendation.",
+        message=conversational_message,
         recommended_experts=experts[:5],
         roadmap=plan,
     )

@@ -14,3 +14,5 @@ httpx
 langchain
 faiss-cpu
 google-generativeai
+razorpay
+certifi
