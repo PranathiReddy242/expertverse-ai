@@ -1,5 +1,7 @@
+from typing import Any
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
-from pydantic import Field
+
 
 class Settings(BaseSettings):
     database_url: str = Field(
@@ -24,9 +26,55 @@ class Settings(BaseSettings):
     merchant_upi_id: str | None = Field("pranathitarigonda@razorpay", env="MERCHANT_UPI_ID")
     merchant_payment_url: str | None = Field("https://razorpay.me/@pranathitarigonda", env="MERCHANT_PAYMENT_URL")
 
+    @field_validator("access_token_expire_minutes", mode="before")
+    @classmethod
+    def parse_expire_minutes(cls, v: Any) -> int:
+        if v is None or v == "":
+            return 60
+        try:
+            return int(v)
+        except Exception:
+            return 60
+
+    @field_validator("groq_verify_ssl", mode="before")
+    @classmethod
+    def parse_groq_verify_ssl(cls, v: Any) -> bool:
+        if v is None or v == "":
+            return True
+        if isinstance(v, str):
+            return v.lower() in ("true", "1", "yes", "t")
+        return bool(v)
+
+    @field_validator("ollama_enabled", mode="before")
+    @classmethod
+    def parse_ollama_enabled(cls, v: Any) -> bool:
+        if v is None or v == "":
+            return False
+        if isinstance(v, str):
+            return v.lower() in ("true", "1", "yes", "t")
+        return bool(v)
+
+    @field_validator("database_url", "secret_key", "groq_model", "razorpay_key_id", "razorpay_key_secret", "merchant_upi_id", "merchant_payment_url", mode="before")
+    @classmethod
+    def parse_str_fallbacks(cls, v: Any, info) -> Any:
+        if v is None or (isinstance(v, str) and not v.strip()):
+            field_name = info.field_name
+            defaults = {
+                "database_url": "postgresql+psycopg://neondb_owner:npg_lDH63iUvdtoW@ep-still-silence-aeq8f3le.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",
+                "secret_key": "devsecretkey_production_expertverse_ai",
+                "groq_model": "llama-3.3-70b-versatile",
+                "razorpay_key_id": "rzp_test_TaPqq4oI6xrr7h",
+                "razorpay_key_secret": "ZYvJ629F6NwaGt0hrU6IItrI",
+                "merchant_upi_id": "pranathitarigonda@razorpay",
+                "merchant_payment_url": "https://razorpay.me/@pranathitarigonda",
+            }
+            return defaults.get(field_name, v)
+        return v
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         extra = "ignore"
+
 
 settings = Settings()
