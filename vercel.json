@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist",
+  "buildCommand": "cd frontend && npm install && npm run build -- --outDir ../dist",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/health", "destination": "/api/index.py" },
     { "source": "/auth/(.*)", "destination": "/api/index.py" },
