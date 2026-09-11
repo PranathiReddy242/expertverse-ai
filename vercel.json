@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
@@ -14,6 +13,6 @@
     { "source": "/documents/(.*)", "destination": "/api/index.py" },
     { "source": "/admin/(.*)", "destination": "/api/index.py" },
     { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api|auth|experts/list|experts/search|experts/featured|experts/profile|bookings|agents|documents|admin|health).*)", "destination": "/index.html" }
   ]
 }
