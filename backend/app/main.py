@@ -21,23 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-def startup_event():
-    try:
-        from migrate_schema import run_migration
-        run_migration()
-        base.Base.metadata.create_all(bind=engine)
-        db = SessionLocal()
-        try:
-            from app.models.user import User
-            user_count = db.query(User).count()
-            if user_count == 0:
-                seed(db)
-            initialize_vector_store(db)
-        finally:
-            db.close()
-    except Exception as e:
-        print(f"Startup initialization note: {e}")
+# Healthcheck and root endpoints
 
 @app.get("/")
 def root():
