@@ -1,7 +1,17 @@
+import os
 import sqlite3
+from app.core.config import settings
 
 def run_migration():
-    conn = sqlite3.connect('dev.db')
+    if not settings.database_url.startswith("sqlite"):
+        print("Using PostgreSQL/remote database. Schema managed by SQLAlchemy metadata.")
+        return
+
+    db_path = settings.database_url.replace("sqlite:///", "").replace("sqlite://", "")
+    if not os.path.exists(db_path):
+        return
+
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     # Check experts columns

@@ -14,39 +14,30 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:4000",
-        "http://localhost:8080",
-        "http://localhost:5180",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-        "http://127.0.0.1:4000",
-        "http://127.0.0.1:8080",
-        "http://127.0.0.1:5180",
-    ],
-    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.on_event("startup")
 def startup_event():
-    from migrate_schema import run_migration
-    run_migration()
-    base.Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
     try:
-        seed(db)
-        initialize_vector_store(db)
-    finally:
-        db.close()
+        from migrate_schema import run_migration
+        run_migration()
+        base.Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        try:
+            from app.models.user import User
+            user_count = db.query(User).count()
+            if user_count == 0:
+                seed(db)
+            initialize_vector_store(db)
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"Startup initialization note: {e}")
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(experts.router, prefix="/experts", tags=["experts"])

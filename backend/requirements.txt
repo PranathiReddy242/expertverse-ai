@@ -3,7 +3,7 @@ uvicorn[standard]
 python-jose[cryptography]
 passlib[bcrypt]
 SQLAlchemy
-psycopg[binary]
+psycopg2-binary
 python-dotenv
 alembic
 pydantic
@@ -14,5 +14,6 @@ httpx
 langchain
 faiss-cpu
 google-generativeai
+groq
 razorpay
 certifi

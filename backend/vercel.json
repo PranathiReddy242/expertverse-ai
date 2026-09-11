@@ -2,23 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "app/main.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app/main.py"
+      "dest": "api/index.py"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "SECRET_KEY": "@secret_key",
-    "RAZORPAY_KEY_ID": "@razorpay_key_id",
-    "RAZORPAY_KEY_SECRET": "@razorpay_key_secret",
-    "MERCHANT_UPI_ID": "@merchant_upi_id",
-    "MERCHANT_PAYMENT_URL": "@merchant_payment_url",
-    "GROQ_API_KEY": "@groq_api_key"
-  }
+  ]
 }
