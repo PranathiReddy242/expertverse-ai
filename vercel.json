@@ -1,33 +1,31 @@
 {
   "version": 2,
-  "framework": null,
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist",
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "{app/**,backend/**}"
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
-  },
-  "rewrites": [
-    { "source": "/auth/(.*)", "destination": "/api/index.py" },
-    { "source": "/experts/list", "destination": "/api/index.py" },
-    { "source": "/experts/search", "destination": "/api/index.py" },
-    { "source": "/experts/featured", "destination": "/api/index.py" },
-    { "source": "/experts/profile", "destination": "/api/index.py" },
-    { "source": "/bookings/create", "destination": "/api/index.py" },
-    { "source": "/bookings/list", "destination": "/api/index.py" },
-    { "source": "/bookings/(.*)", "destination": "/api/index.py" },
-    { "source": "/agents/(.*)", "destination": "/api/index.py" },
-    { "source": "/documents/(.*)", "destination": "/api/index.py" },
-    { "source": "/admin/stats", "destination": "/api/index.py" },
-    { "source": "/admin/users", "destination": "/api/index.py" },
-    { "source": "/admin/experts", "destination": "/api/index.py" },
-    { "source": "/admin/experts/(.*)", "destination": "/api/index.py" },
-    { "source": "/admin/documents", "destination": "/api/index.py" },
-    { "source": "/admin/documents/(.*)", "destination": "/api/index.py" },
-    { "source": "/admin/bookings", "destination": "/api/index.py" },
-    { "source": "/health", "destination": "/api/index.py" },
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "routes": [
+    { "src": "/health", "dest": "api/index.py" },
+    { "src": "/auth/(.*)", "dest": "api/index.py" },
+    { "src": "/experts/list", "dest": "api/index.py" },
+    { "src": "/experts/search", "dest": "api/index.py" },
+    { "src": "/experts/featured", "dest": "api/index.py" },
+    { "src": "/experts/profile", "dest": "api/index.py" },
+    { "src": "/bookings/(.*)", "dest": "api/index.py" },
+    { "src": "/agents/(.*)", "dest": "api/index.py" },
+    { "src": "/documents/(.*)", "dest": "api/index.py" },
+    { "src": "/admin/(.*)", "dest": "api/index.py" },
+    { "src": "/api/(.*)", "dest": "api/index.py" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/frontend/index.html" }
   ]
 }
