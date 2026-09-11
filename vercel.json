@@ -1,32 +1,19 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    { "src": "/health", "dest": "api/index.py" },
-    { "src": "/auth/(.*)", "dest": "api/index.py" },
-    { "src": "/experts/list", "dest": "api/index.py" },
-    { "src": "/experts/search", "dest": "api/index.py" },
-    { "src": "/experts/featured", "dest": "api/index.py" },
-    { "src": "/experts/profile", "dest": "api/index.py" },
-    { "src": "/bookings/(.*)", "dest": "api/index.py" },
-    { "src": "/agents/(.*)", "dest": "api/index.py" },
-    { "src": "/documents/(.*)", "dest": "api/index.py" },
-    { "src": "/admin/(.*)", "dest": "api/index.py" },
-    { "src": "/api/(.*)", "dest": "api/index.py" },
-    { "src": "/assets/(.*)", "dest": "/frontend/dist/assets/$1" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/frontend/dist/index.html" }
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    { "source": "/health", "destination": "/api/index.py" },
+    { "source": "/auth/(.*)", "destination": "/api/index.py" },
+    { "source": "/experts/list", "destination": "/api/index.py" },
+    { "source": "/experts/search", "destination": "/api/index.py" },
+    { "source": "/experts/featured", "destination": "/api/index.py" },
+    { "source": "/experts/profile", "destination": "/api/index.py" },
+    { "source": "/bookings/(.*)", "destination": "/api/index.py" },
+    { "source": "/agents/(.*)", "destination": "/api/index.py" },
+    { "source": "/documents/(.*)", "destination": "/api/index.py" },
+    { "source": "/admin/(.*)", "destination": "/api/index.py" },
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
