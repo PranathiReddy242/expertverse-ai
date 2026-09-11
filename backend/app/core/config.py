@@ -3,7 +3,7 @@ from pydantic import Field
 
 class Settings(BaseSettings):
     database_url: str = Field(
-        "postgresql://neondb_owner:npg_lDH63iUvdtoW@ep-still-silence-aeq8f3le.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",
+        "postgresql+psycopg://neondb_owner:npg_lDH63iUvdtoW@ep-still-silence-aeq8f3le.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",
         env="DATABASE_URL"
     )
     secret_key: str = Field("devsecretkey_production_expertverse_ai", env="SECRET_KEY")
