@@ -39,6 +39,14 @@ def startup_event():
     except Exception as e:
         print(f"Startup initialization note: {e}")
 
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "ExpertVerse AI API", "version": "0.1.0"}
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(experts.router, prefix="/experts", tags=["experts"])
 app.include_router(bookings.router, prefix="/bookings", tags=["bookings"])
