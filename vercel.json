@@ -25,8 +25,8 @@
     { "src": "/documents/(.*)", "dest": "api/index.py" },
     { "src": "/admin/(.*)", "dest": "api/index.py" },
     { "src": "/api/(.*)", "dest": "api/index.py" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/assets/(.*)", "dest": "/frontend/dist/assets/$1" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/(.*)", "dest": "/frontend/dist/index.html" }
   ]
 }
