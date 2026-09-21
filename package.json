@@ -1,8 +1,0 @@
-{
-  "name": "expertverse-ai",
-  "private": true,
-  "version": "0.1.0",
-  "scripts": {
-    "build": "cd frontend && npm install && npm run build -- --outDir ../dist"
-  }
-}
