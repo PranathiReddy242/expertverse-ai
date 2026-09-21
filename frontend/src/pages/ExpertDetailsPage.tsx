@@ -12,12 +12,12 @@ export default function ExpertDetailsPage() {
   useEffect(() => {
     if (id) {
       setLoading(true)
-      getExpertDetails(id)
-        .then((exp) => {
+      Promise.all([
+        getExpertDetails(id),
+        getExpertAvailability(Number(id))
+      ])
+        .then(([exp, avail]) => {
           setExpert(exp)
-          return getExpertAvailability(Number(id))
-        })
-        .then((avail) => {
           setSlots(avail?.slots || [])
         })
         .catch((err) => console.error('Failed to load expert details', err))

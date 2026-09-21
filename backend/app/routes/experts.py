@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, Header
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.session import get_db
 from app.models.expert import Expert
@@ -109,9 +109,12 @@ def list_experts(
     # Only admins can view unverified/rejected experts in the full listing
     is_admin = isinstance(optional_user, User) and optional_user.is_admin
     if not all_statuses or not is_admin:
-        query = query.filter(Expert.is_verified == True, Expert.is_active == True)
+        query = db.query(Expert).options(joinedload(Expert.user)).filter(Expert.is_active == True)
 
-    if q and isinstance(q, str) and q.strip():
+    if not all_statuses:
+        query = query.filter(Expert.is_verified == True)
+
+    if q:
         search = f"%{q.strip()}%"
         query = query.filter(
             Expert.title.ilike(search)
@@ -129,7 +132,12 @@ def expert_details(
     db: Session = Depends(get_db),
     optional_user: User | None = Depends(_optional_current_user),
 ):
-    expert = db.get(Expert, expert_id)
+    expert = (
+        db.query(Expert)
+        .options(joinedload(Expert.user))
+        .filter(Expert.id == expert_id)
+        .first()
+    )
 
     if not expert:
         raise HTTPException(
