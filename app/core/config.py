@@ -58,7 +58,6 @@ class Settings(BaseSettings):
     @classmethod
     def parse_str_fallbacks(cls, v: Any, info) -> Any:
         if v is None or (isinstance(v, str) and not v.strip()):
-            # Fall back to default
             field_name = info.field_name
             defaults = {
                 "database_url": "postgresql+psycopg://neondb_owner:npg_lDH63iUvdtoW@ep-still-silence-aeq8f3le.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require",

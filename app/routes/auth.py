@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -66,8 +66,6 @@ def register(user_create: UserCreate, db: Session = Depends(get_db)):
         name=user_create.name,
         email=user_create.email,
         password_hash=get_password_hash(user_create.password),
-
-        # Default roles
         is_learner=True,
         is_expert=is_expert,
         is_admin=False,
@@ -81,14 +79,47 @@ def register(user_create: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=Token)
-def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+async def login(
+    request: Request,
     db: Session = Depends(get_db),
 ):
+    username = None
+    password = None
+
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+            username = body.get("username") or body.get("email")
+            password = body.get("password")
+        except Exception:
+            pass
+    else:
+        try:
+            form = await request.form()
+            username = form.get("username") or form.get("email")
+            password = form.get("password")
+        except Exception:
+            pass
+
+    if not username or not password:
+        try:
+            body = await request.json()
+            username = body.get("username") or body.get("email")
+            password = body.get("password")
+        except Exception:
+            pass
+
+    if not username or not password:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Missing username or password",
+        )
+
     user = authenticate_user(
         db,
-        form_data.username,
-        form_data.password,
+        username,
+        password,
     )
 
     if not user:
